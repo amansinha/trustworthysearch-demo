@@ -1,0 +1,184 @@
+/*
+Copyright (c) 2020, Trustworthy AI, Inc. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1.  Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2.  Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3.  Neither the name of the copyright holder(s) nor the names of any contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission. No license is granted to the trademarks of
+the copyright holders even if such marks are included in this software.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ai.trustworthy.demo.search";
+option java_outer_classname = "TrustworthySearch";
+option objc_class_prefix = "TWS";
+option optimize_for = SPEED;
+
+package trustworthy_search;
+
+// The probabilistic distribution primitives to search over.
+// For simplicity, this demo just searches over standard Gaussians with mean 0, variance 1
+// or standard Uniform distributons between 0 and 1
+// The full API exposes a more sophisticated interface with more continuous and 
+// and disrete distribution primitives (eg UNIFORM, EXP, BINOMIAL, MULTINOMIAL)
+message Distribution {
+  enum Type {
+    GAUSSIAN = 0;
+    UNIFORM = 1;
+  }
+}
+
+// Styles of jobs.
+// Types:
+//   RISK - find the coverage of all failures as well as return the relative importance
+//     of the failure modes. This is not available in the demo. Contact support@trustworthy.ai
+//     if you'd like to learn more about gettign a full license.
+//   GRID - do grid search over the parameter space.
+//   MONTECARLO - do a naive Monte Carlo search for falures over the parameter space
+//   STRESSTEST - look for worst-case failures in the parameter space
+// Modes:
+//   MINIMIZE  - try to make the objective function go below a threshold
+//   MAXIMIZE  - try to make the objective function go above a threshold
+
+message JobStyle {
+  enum Type {
+    RISK = 0;
+    GRID = 1;
+    MONTECARLO = 2;
+    STRESSTEST = 3;
+  }
+  enum Mode {
+    MAXIMIZE = 0;
+    MINIMIZE = 1;
+  }
+}
+
+// threshold - the threshold above (or below) which you want to find events
+// dimension - the size of the search space
+// dist_types - a list of each dimension's distribution type
+// num_evals - the number of simulations you want to run
+// grid_density - how many grid points along each dimension (only used for GRID job_type)
+message JobRequest {
+  double threshold = 1;
+  int32 dimension = 2;
+  repeated Distribution.Type dist_types = 3;
+  JobStyle.Type job_type = 4;
+  JobStyle.Mode job_mode = 5;
+  int32 num_evals = 6;
+  repeated int32 grid_density = 7;
+}
+
+// This demo API returns the parameters and corresponding objective values of all
+// simulations that were run.
+// The 'completed' field indicates whether an objective was sent back to the TrustworthySearch
+//   server for a set of 'params' that were sent by the server to the client. This may be false
+//   if the client killed the job prematurely before completing all simulations.
+// The full API also gives access to further analysis of the job, including 
+// dimensionality-reduced visualizations and access to query importance-samplers
+// For the RISK job type, the probabilties of various thresholds are also given.
+message JobResult {
+  message Result {
+    int32 simid = 1;
+    repeated double params = 2;
+    double objective = 3;
+    bool completed = 4;
+  }
+  repeated Result results = 1;
+}
+
+// jobid - each job is uniquely defined by its id
+// info - information from the server to notify the client about the job 
+message Job {
+  int32 jobid = 1;
+  string info = 2;
+}
+
+message Empty {}
+
+// jobid identifies the job
+// simid is a hash that identifies the simulation
+// params are the scenario parameters to use
+message SimParams {
+  int32 jobid = 1;
+  int32 simid = 2;
+  repeated double params = 3;
+}
+
+// objective is the scalar result of the simulation
+message SimResult {
+  int32 jobid = 1;
+  int32 simid = 2;
+  double objective = 3;
+}
+
+// The main TrustworthySearch API.
+// StartJob starts a job using a JoRequest object and returns a Job object
+// OpenSimStream creates a stream with which a client can receive simulations to run
+// until the job is finished
+// UploadSimResult is the way a client uploads results from jobs (asynchronously)
+// KillJob lets you stop a job before it is finished
+// GetJobResult gets analysis from a finished job
+service TrustworthySearch {
+  rpc StartJob(JobRequest) returns (Job);
+
+  rpc OpenSimStream(Job) returns (stream SimParams);
+
+  rpc UploadSimResult(SimResult) returns (Empty);
+
+  rpc KillJob(Job) returns (Empty);
+
+  rpc GetJobResult(Job) returns (JobResult);
+}
+
+// Below is an example interface of a load-balanced client
+// A broker distributes jobs amongst simulators and collects results
+// PushResult is what the worker uses to give a result back to the broker
+service Broker {
+  rpc PushResult(SimResult) returns (Empty);
+}
+
+// A broker is uniquely identified by a port
+message BrokerPort {
+  int32 port=1;
+}
+
+// A broker is uniquely identified by a port
+message BrokerSimParams {
+  SimParams simparams=1;
+  int32 port=2;
+}
+
+// The simulator worker can run multiple jobs being sent to it by
+// multiple brokers (each of which is uniquely defined by its port).
+// Simulate is what the broker calls to give a worker a specific sim to run
+// RegisterBroker lets a worker know about a certain broker
+// DeregisterBroker tells a worker not to listen to a specific broker anymore
+service Simulator {
+  rpc Simulate(BrokerSimParams) returns (Empty);
+
+  rpc RegisterBroker(BrokerPort) returns (Empty);
+
+  rpc DeregisterBroker(BrokerPort) returns (Empty);
+}
