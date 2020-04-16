@@ -174,8 +174,8 @@ if __name__ == '__main__':
     parser.add_argument('--threshold', type=float, default=2, help='Threshold level (gamma) for event search. Default = 2')
     parser.add_argument('--num_evals', type=int, default=100, help='Number of simulatons to run. Default = 100')
     parser.add_argument('--grid_density', type=int, nargs='+', default=[10, 10], help='Grid density for GRID job style. Default 10 10')
-    parser.add_argument('--job_type', type=str, choices=['RISK', 'GRID', 'MONTECARLO', 'STRESSTEST'], default='MONTECARLO',
-                        help='Options are STRESSTEST (default), RISK, GRID, MONTECARLO')
+    parser.add_argument('--job_type', type=str, choices=['MONTECARLO', 'GRID', 'STRESSTEST', 'RISK'], default='MONTECARLO',
+                        help='Options are MONTECARLO (default), GRID, STRESSTEST, RISK')
     args = parser.parse_args()
     type_dict = {'RISK': ts.JobStyle.Type.RISK,
                  'GRID': ts.JobStyle.Type.GRID,
