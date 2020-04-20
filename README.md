@@ -24,7 +24,7 @@ the search server asynchronously.
 
 This demo is designed for small-scale experimentation to see how the
 TrustworthySearch API works. The server it communicates with at
-<https://trial.trustworthy.ai> contains limited versions of our search algorithms and will cap jobs at 100 simulations. Note: this is solely an API endpoint and will not show anything useful if you visit it in a regular browser. 
+`https://trial.trustworthy.ai` contains limited versions of our search algorithms and will cap jobs at 100 simulations. Note: this is solely an API endpoint and will not show anything useful if you visit it in a regular browser. 
 
 The code in the `python` folder is designed for python3. The following is a brief overview of
 the contents (see individual files for full documentation):
