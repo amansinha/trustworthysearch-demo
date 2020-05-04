@@ -104,7 +104,7 @@ We'll talk about each of their merits below and dicuss when you should use them.
 * `GRID` and `STRESSTEST` are best used for uniform distributions over the search space, whereas `MONTECARLO` and `RISK` should be used when you have a non-uniform distribution over the search space.
 * `GRID` and `MONTECARLO` are best suited for low-dimensional settings or when the probability of the region of interest is high. `STRESSTEST` and `RISK` are better suited for high-dimensional settings and/or when finding the region of interest is hard.
 * `STRESSTEST` and `RISK` are adaptive methods: they use the previous samples to inform where to search next. `GRID` and `MONTECARLO` are not adaptive: the parameter locations are chosen at the start of the job.
-* `STRESSTEST` is good at finding single worst-case points of failure but is not at getting coverage over failure modes. `RISK` is good at finding coverage of all failure modes and prioritizes finding high-likelihood failure modes over less likely ones.
+* `STRESSTEST` is good at finding single worst-case points of failure but not at getting coverage over failure modes. `RISK` is good at finding coverage of all failure modes and prioritizes finding high-likelihood failure modes over less likely ones.
 
 ---
 
