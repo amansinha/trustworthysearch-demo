@@ -163,7 +163,7 @@ Monte Carlo (the `MONTECARLO` job type) draws points randomly from the distribut
 <br/><br/>
 <br/><br/>
 
-As you can see in the images above, Monte Carlo does well (just like grid-search) in the uniform example (the left image). But when the probability of the region of interest gets small (the right image), it doesn't find any samples. This is expected behavior - with 625 samples, we are unlikely to have even one to land within a region that has probability of 1/1000. `RISK` is better at efficiently getting coverage of failure mdoes when the probability is rare, and `STRESSTEST` is better at efficiently finding single instances of failure.
+As you can see in the images above, Monte Carlo does well (just like grid-search) in the uniform example (the left image). But when the probability of the region of interest gets small (the right image), it doesn't find any samples. This is expected behavior - with 625 samples, we are unlikely to have even one land within a region that has probability of 1/1000. `RISK` is better at efficiently getting coverage of failure mdoes when the probability is rare, and `STRESSTEST` is better at efficiently finding single instances of failure.
 
 
 
