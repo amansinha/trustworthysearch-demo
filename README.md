@@ -60,7 +60,7 @@ support@trustworthy.ai.
 
 0.  `pip3 install -r requirements.txt` to install the relevant 3rd party packages.
 
-1.  `cd python` to navigate to the `python` directory
+1.  `cd python` to navigate to the `python` directory (and ensure you have downloaded and placed `trial_server.crt` here)
 
 2.  `python3 run_codegen.py` to compile the protobuf file
 
