@@ -138,7 +138,7 @@ For all the modes, we use 625 samples in order to provide a fair comparison. Not
 
 Grid-search (the `GRID` job type) places a regular lattice over the points in the parameter space. When the parameters have uniform distributions (left image below), this is a pretty standard grid like we usually think of it. When the parameters are not uniformly distributed, however, `GRID` has the interpretation of carving the parameter space into regions of *equal probability* (right image below).
 
-<img src="images/Grid_U.png" align=left width=425><img src="images/Grid_G.png" align=right width=425>
+<img src="images/Grid_U.png" align=left width=420><img src="images/Grid_G.png" align=right width=420>
 <br/><br/>
 <br/><br/>
 <br/><br/>
@@ -154,7 +154,7 @@ The right-hand image shows how regions of equal probability spread out as we get
 ## Monte Carlo
 Monte Carlo (the `MONTECARLO` job type) draws points randomly from the distribution of parameters. When the parameters are uniformly distributed, regions of equal area have equal probability of having a sample landing within them. When the distribution is not uniform, regions of equal probability need not have equal area. From a certain perspective, you can think of Monte Carlo as sort of like doing a "randomized" version of grid-search (just as grid-search is like a "derandomized" Monte Carlo). 
 
-<img src="images/MC_U.png" align=left width=425><img src="images/MC_G.png" align=right width=425>
+<img src="images/MC_U.png" align=left width=420><img src="images/MC_G.png" align=right width=420>
 <br/><br/>
 <br/><br/>
 <br/><br/>
@@ -171,7 +171,7 @@ As you can see in the images above, Monte Carlo does well (just like grid-search
 
 Stress-testing (the `STRESSTEST` job type) is all about finding worst-case failures (in this example, finding parameters `x` that maximize `f(x)`). In some communities, this is also called black-box optimization. This is an adaptive method, because we use information from previous samples to inform where we search next. Unlike the `RISK` job type, stress-testing doesn't care about the likelihoods of points. It only cares about optimizing the function. 
 
-<img src="images/Stress_U.png" align=left width=425><img src="images/Stress_G.png" align=right width=425>
+<img src="images/Stress_U.png" align=left width=420><img src="images/Stress_G.png" align=right width=420>
 <br/><br/>
 <br/><br/>
 <br/><br/>
@@ -194,7 +194,7 @@ At a high level, the `RISK` job type is essentially an adaptive form of Monte Ca
 
 Here are a few other ways to think about what this method is doing: just like we can think of grid-search in non-uniform spaces as carving up the parameter space into regions of known probabilities, we can think of this risk approach as carving up the *output space* into regions of known probabilities. Furthermore, we can think of this risk method as doing black-box estimation, a counterpart to stress-testing which does black-box optimization. Estimation is all about coverage of probability and keeping track of likelihoods, whereas optimization is all about just finding any point in the region of interest.
 
-<img src="images/Risk_U.png" align=left width=425><img src="images/Risk_G.png" align=right width=425>
+<img src="images/Risk_U.png" align=left width=420><img src="images/Risk_G.png" align=right width=420>
 <br/><br/>
 <br/><br/>
 <br/><br/>
