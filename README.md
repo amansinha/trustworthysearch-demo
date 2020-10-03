@@ -83,9 +83,7 @@ support@trustworthy.ai.
     the workers can distinguish between them properly.
 
     If you get a “Name resolution failure” error or other protobuf related errors, run
-    `pip3 install -r requirements.txt –-upgrade`
-    
-    You may need to explcitly upgrade protobuf if the problem persists.
+    `pip3 install -r requirements.txt –-upgrade`. You may need to explicitly upgrade protobuf if the problem persists.
 
 6.  Ctrl-c `worker.py` when the job is complete. If you want to kill a
     job early you should send a KillJob request to the server by running
