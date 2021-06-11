@@ -17,6 +17,8 @@ preserving the integrity and confidentiality of the software under test.
 
 # Getting started
 
+Note: the demo server at `https://trial.trustworthy.ai` is currently offline.
+
 This code provides an example of a client which acts as a broker to
 local simulation workers. The broker receives jobs from the search
 server, load balances amongst workers, and then sends results back to
